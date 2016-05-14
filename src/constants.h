@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 Mountassir El Hafi, (mountassirbillah1@gmail.com)
  *
- * Constants.h: Part of gMonitor
+ * Constants.h: Part of gmonitor
  *
- * gMonitor is free software; you can redistribute it and/or modify
+ * gmonitor is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
  * published by the Free Software Foundation.
  *
- * gMonitor is distributed in the hope that it will be useful,
+ * gmonitor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with gMonitor.  If not, see <http://www.gnu.org/licenses/>.
+ * along with gmonitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef CONSTANTS_H_
