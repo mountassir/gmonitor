@@ -1,47 +1,45 @@
 # What is gmonitor?
-This program monitors the gpu usage (gpu core usage & temperature, video memory usage and PCI-E & 
-memory bus usage).
-I write CUDA programs and always needed to monitor how my they  behave in real time, searched for 
-an MSI afterburner like programs on GNU/Linux systems but couldn't find any, so I decided to put 
-this together and have been using it for quite some time now. Though this is quite minimal, it's 
-good enough for what I needed it to do (monitor how my program is using resources and looking for 
-bottlenecks in real time).
+This is a GPU monitoring program, it monitors the core usage, VRAM usage, PCI-E & memory bus usage and the temperature of the GPU.
+I write CUDA programs and always needed a way to monitor how they behave in real time, searched for an MSI afterburner like programs on GNU/Linux systems but couldn't find any, so I decided to put this together and have been using it for quite some time now. Though this is quite minimal, it's 
+good enough for what I needed it.
 
 
 # Running environment: 
-This has been developed and used in Ubuntu 14.04.1 operating system, I have not tested it in any 
-other GNU/Linux systems.
+This has been developed and used in a machine running Ubuntu, I have not tested it in any other systems.
 
 # Requirements:
-At least one NVIDIA gpu, this only supports NVIDIA gpus for now as I only needed this to monitor 
-my CUDA programs. Feel free to add support for AMD cards.
-This program probes the NVIDIA drivers for statistics through nvidia-settings, make sure the NVIDA 
-drivers are properly installed on your system.
-NVIDIA CUDA install guide: 
-http://docs.nvidia.com/cuda/cuda-getting-started-guide-for-linux/index.html#axzz3JBNT4RBl
-If you face issues with the nouveau driver, try: 
-http://askubuntu.com/questions/451221/ubuntu-14-04-install-nvidia-driver
+At least one NVIDIA GPU, this only supports NVIDIA GPUs for now as I only needed this to monitor my CUDA programs. Support for AMD/Intel cards might come in the future if needed, feel free to add them as well.
+
+This program probes the NVIDIA drivers for statistics through nvidia-settings, make sure the NVIDA drivers are properly installed on your system.
+
+###### CUDA install:
+Follow [Nvidia CUDA install guide](http://docs.nvidia.com/cuda/index.html) to install CUDA on your machine, If you face issues with the nouveau driver, try this [Nouveau workaround](http://askubuntu.com/questions/451221/ubuntu-14-04-install-nvidia-driver).
 
 # Usage:
 Download source code and compile, run the executable:
 
--d [displayMode]  displayMode: 0 (default) Monitor both current and previous gpu states.
-		                       1 Monitor most recent gpu state only.
-		                       2 Monitor previous gpu states only.
-		                       3 Same as 0, print current states for all gpus then print history.
+-d [displayMode]<br />
+0 (default) Monitor both current and previous GPU states.<br />
+1 Monitor most recent GPU state only.<br />
+2 Monitor previous GPU states only.<br />
+3 Same as 0, print current states for all GPU then print history.<br />
 
--g [gpuNumber]      gpuNumber: Gpu numbers to monitor, primary gpu's number is 0...
+-g [gpuNumber]<br />
+GPU numbers to monitor, primary GPU's number is 0...<br />
 
--r [refreshRate]  refreshRate: How often does the program refreshes the screen with new states (default         
-                               is 2 seconds). 
+-r [refreshRate]<br />
+Monitoring refresh rate (default is 2 seconds). <br />
 
--h                       Help: Display this menu.
+-h<br />
+Display this menu.<br />
 
--d 1 -g 02     Monitor the most recent state only for the first and third gpu.
--d 0 -g 0123   Monitor current and history states for all 4 gpus in a quad SLI set up.
--d 0 -r 3      Monitor both current and previous states for all gpus, refresh every 3 seconds.
+###### Examples:
+-d 1 -g 02<br />
+Monitor the most recent state only for the first and third gpu.<br />
+-d 0 -g 0123<br />
+Monitor current and history states for 4 GPUs.<br />
+-d 0 -r 3<br />
+Monitor both current and previous states for all GPUs, refresh every 3 seconds.<br />
 
 # Limitations:
-This does not support AMD cards, might add that in the future.
-Multi gpu support have not been tested, this should scale and work with any number of available but I have 
-not tested it myself as I only have one card.
+This only supports Nvidia cards at the moment and support for other cards might be added in the future. Multi GPU support have not been tested, it should scale and work with any number of available GPUs but I have not tested it myself as I only have one card.
