@@ -24,23 +24,22 @@ void displayHelpMenu()
 	cout << "====================\n"
 		 << "       Usage\n"
 		 << "====================\n"
-	     << "-d [displayMode]  displayMode:  0 (default) Monitor both current and previous gpu states.\n"
-		 << "                                1 Monitor most recent gpu state only.\n"
-		 << "                                2 Monitor previous gpu states only.\n"
-		 << "                                3 Same as 0, print current states for all gpus then print history.\n"
+	     << "-d [displayMode] 0 (default) Monitor both current and previous GPU states.\n"
+		 << "                 1 Monitor most recent GPU state only.\n"
+		 << "                 2 Monitor previous GPU states only.\n"
+		 << "                 3 Same as 0, print current states for all GPU then print history.\n"
 		 << "\n"
-		 << "-g [gpuNumber]    gpuNumber:    Gpu numbers to monitor, primary gpu's number is 0...\n"
+		 << "-g [gpuNumber]   GPU numbers to monitor, primary GPU's number is 0...\n"
 		 << "\n"
-		 << "-r [refreshRate]  refreshRate:  How often does the program refreshes the screen with new states "
-		 << "                                (default is 2 seconds). "
+		 << "-r [refreshRate] Monitoring refresh rate (default is 2 seconds).\n"
 		 << "\n"
-		 << "-h                Help:         Display this menu.\n"
+		 << "-h               Display this menu.\n"
 		 << "====================\n"
 		 << "      Examples\n"
 		 << "====================\n"
-		 << "-d 1 -g 02     Monitor the most recent state only for the first and third gpu.\n"
-		 << "-d 0 -g 0123   Monitor current and history states for all 4 gpus in a quad SLI set up.\n"
-	     << "-d 0 -r 3      Monitor both current and previous states for all gpus, refresh every 3 seconds.\n";
+		 << "-d 1 -g 02    Monitor the most recent state only for the first and third gpu.\n"
+		 << "-d 0 -g 0123  Monitor current and history states for 4 GPUs.\n"
+	     << "-d 0 -r 3     Monitor both current and previous states for all GPUs, refresh every 3 seconds.\n";
 }
 
 //parse the display mode arguments passed in
