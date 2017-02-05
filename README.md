@@ -1,3 +1,4 @@
+<a href="http://s1239.photobucket.com/user/ttass1/media/apps/gmonitor_zpsx1swlyn7.png.html" target="_blank"><img src="http://i1239.photobucket.com/albums/ff506/ttass1/apps/gmonitor_zpsx1swlyn7.png" border="0" alt=" photo gmonitor_zpsx1swlyn7.png"/></a>
 # What is gmonitor?
 This is a GPU monitoring program, it monitors the core usage, VRAM usage, PCI-E & memory bus usage and the temperature of the GPU.
 I write CUDA programs and always needed a way to monitor how they behave in real time, searched for an MSI afterburner like programs on GNU/Linux systems but couldn't find any, so I decided to put this together and have been using it for quite some time now. Though this is quite minimal, it's 
