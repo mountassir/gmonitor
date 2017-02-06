@@ -35,12 +35,18 @@ Monitoring refresh rate (default is 2 seconds). <br />
 Display this menu.<br />
 
 ###### Examples:
--d 1 -g 02<br />
-Monitor the most recent state only for the first and third gpu.<br />
--d 0 -g 0123<br />
-Monitor current and history states for 4 GPUs.<br />
--d 0 -r 3<br />
-Monitor both current and previous states for all GPUs, refresh every 3 seconds.<br />
+Monitor the most recent state only for the first and third gpu.
+```
+gmonitor -d 1 -g 02
+```
+Monitor current and history states for 4 GPUs.
+```
+gmonitor -d 0 -g 0123
+```
+Monitor both current and previous states for all GPUs, refresh every 3 seconds.
+```
+gmonitor -d 0 -r 3
+```
 
 # Limitations:
 This only supports Nvidia cards at the moment and support for other cards might be added in the future. Multi GPU support have not been tested, it should scale and work with any number of available GPUs but I have not tested it myself as I only have one card.
