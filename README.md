@@ -17,7 +17,7 @@ This program probes the NVIDIA drivers for statistics through nvidia-settings, m
 Follow [Nvidia CUDA install guide](http://docs.nvidia.com/cuda/index.html) to install CUDA on your machine, If you face issues with the nouveau driver, try this [Nouveau workaround](http://askubuntu.com/questions/451221/ubuntu-14-04-install-nvidia-driver).
 
 # Usage:
-Download source code and compile, run the executable:
+Download the executable in the folder "compiled" or compile your own from the source code in the folder "src", run the executable with the following arguments:
 
 -d [displayMode]<br />
 0 (default) Monitor both current and previous GPU states.<br />
