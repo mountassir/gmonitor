@@ -56,6 +56,8 @@ private:
 	void gpuUsedMemoryCommand(const string &gpuId, string *command);
 	void gpuTotalMemoryCommand(const string &gpuId, string *command);
 
+	bool _optirun;
+
 public:
 	//get the list of available gpus on this machine
 	bool getGpuList(vector<string> *gpuList);
@@ -63,6 +65,10 @@ public:
 	//get the current states of a particular gpu
 	void getGpuStates(GpuStates *gpuStates,
             		  const string &gpuId);
+
+	void useOptirun(const bool withOptirun);
+
+	StatsReader();
 };
 
 #endif
