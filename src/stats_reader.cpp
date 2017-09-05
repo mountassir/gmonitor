@@ -21,6 +21,11 @@
 #include <string>
 #include <cstdlib>
 
+StatsReader::StatsReader() :
+	_optirun(false)
+{
+}
+
 //get the current states of a particular gpu
 void StatsReader::getGpuStates(GpuStates *gpuStates,
             		      const string &gpuId)
@@ -161,8 +166,10 @@ bool StatsReader::getGpuList(vector<string> *gpuList)
 void StatsReader::gpuListCommand(string *gpuList)
 {
 	stringstream oss;
-
-	oss << "nvidia-settings -t -q gpus | sed -e 's/^ *//'";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q gpus | sed -e 's/^ *//'";
 
 	*gpuList = oss.str();
 }
@@ -175,7 +182,10 @@ void StatsReader::gpuCoreUsageCommand(const string &gpuId, string *command)
 {
 	stringstream oss;
 
-	oss << "nvidia-settings -t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep graphics|sed 's/[^0-9]//g'";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep graphics|sed 's/[^0-9]//g'";
 
 	*command = oss.str();
 }
@@ -188,7 +198,10 @@ void StatsReader::gpuMemoryBandwidthCommand(const string &gpuId, string *command
 {
 	stringstream oss;
 
-	oss << "nvidia-settings -t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep memory|sed 's/[^0-9]//g'";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep memory|sed 's/[^0-9]//g'";
 
 	*command = oss.str();
 }
@@ -201,7 +214,10 @@ void StatsReader::gpuPciBandwidthCommand(const string &gpuId, string *command)
 {
 	stringstream oss;
 
-	oss << "nvidia-settings -t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep PCIe|sed 's/[^0-9]//g'";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep PCIe|sed 's/[^0-9]//g'";
 
 	*command = oss.str();
 }
@@ -211,7 +227,10 @@ void StatsReader::gpuTempCommand(const string &gpuId, string *command)
 {
 	stringstream oss;
 
-	oss << "nvidia-settings -t -q " << gpuId << "/GPUCoreTemp";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/GPUCoreTemp";
 
 	*command = oss.str();
 }
@@ -221,7 +240,10 @@ void StatsReader::gpuUsedMemoryCommand(const string &gpuId, string *command)
 {
 	stringstream oss;
 
-	oss <<"nvidia-settings -t -q " << gpuId << "/UsedDedicatedGPUMemory";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/UsedDedicatedGPUMemory";
 
 	*command = oss.str();
 }
@@ -231,7 +253,15 @@ void StatsReader::gpuTotalMemoryCommand(const string &gpuId, string *command)
 {
 	stringstream oss;
 
-	oss <<"nvidia-settings -t -q " << gpuId << "/TotalDedicatedGPUMemory";
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/TotalDedicatedGPUMemory";
 
 	*command = oss.str();
+}
+
+void StatsReader::useOptirun(const bool withOptirun)
+{
+	_optirun = withOptirun;
 }

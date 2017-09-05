@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <cstring>
 
 #include "manager.h"
 #include "utils.h"
@@ -38,6 +39,8 @@ int main(int argc, char **argv)
 	int flag;
 
 	opterr = 0;
+
+	bool optirun = strcmp(argv[0], "optirun");
 
 	//parse arguments
 	while ((flag = getopt(argc, argv, "d:g:r:h")) != -1)
@@ -101,7 +104,7 @@ int main(int argc, char **argv)
 		gpusToMoniterSpecifiedByUser(&gpusToMonitor, string(gFlag));
 	}
 
-	Manager manager;
+	Manager manager(optirun);
 
 	manager.initialise(mode, refreshRate);
 

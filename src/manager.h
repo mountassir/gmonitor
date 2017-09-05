@@ -64,12 +64,16 @@ private:
 	bool noGpusToMonitor();
 
 public:
-	Manager(DisplayMode mode, int refresh) :
-		displayMode(mode), refreshRate(refresh) {};
+	Manager(DisplayMode mode, int refresh, bool optirun = false) :
+		displayMode(mode), refreshRate(refresh) {
+			statsReader.useOptirun(optirun);
+		};
 
-	Manager() :
+	Manager(bool optirun = false) :
 		displayMode(CURRENT_NEXT_TO_HISTORY),
-		refreshRate(DEFAULT_REFRESH_RATE) {};
+		refreshRate(DEFAULT_REFRESH_RATE) {
+			statsReader.useOptirun(optirun);
+		};
 
 	//initialise list of gpus
 	void initialise(DisplayMode mode = CURRENT_NEXT_TO_HISTORY,
