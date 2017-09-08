@@ -31,10 +31,17 @@ GPU numbers to monitor, primary GPU's number is 0...<br />
 -r [refreshRate]<br />
 Monitoring refresh rate (default is 2 seconds). <br />
 
+-o<br />
+Enable support for Optirun.<br />
+
 -h<br />
 Display this menu.<br />
 
 ###### Examples:
+Use defaults
+```
+gmonitor
+```
 Monitor the most recent state only for the first and third gpu.
 ```
 gmonitor -d 1 -g 02

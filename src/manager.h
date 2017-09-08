@@ -64,20 +64,17 @@ private:
 	bool noGpusToMonitor();
 
 public:
-	Manager(DisplayMode mode, int refresh, bool optirun = false) :
-		displayMode(mode), refreshRate(refresh) {
-			statsReader.useOptirun(optirun);
-		};
+	Manager(DisplayMode mode,
+			int refresh,
+			bool optirun = false) :
+				displayMode(mode),
+				refreshRate(refresh),
+				statsReader(optirun) {};
 
 	Manager(bool optirun = false) :
-		displayMode(CURRENT_NEXT_TO_HISTORY),
-		refreshRate(DEFAULT_REFRESH_RATE) {
-			statsReader.useOptirun(optirun);
-		};
-
-	//initialise list of gpus
-	void initialise(DisplayMode mode = CURRENT_NEXT_TO_HISTORY,
-			        int refresh = DEFAULT_REFRESH_RATE);
+				displayMode(CURRENT_NEXT_TO_HISTORY),
+				refreshRate(DEFAULT_REFRESH_RATE),
+				statsReader(optirun) {};
 
 	//start monitoring the given gpus
 	void startMonitoring(const vector<int> &gpusToMonitor);

@@ -22,16 +22,6 @@
 #include <stdio.h>
 #include "manager.h"
 
-//initialise list of gpus
-void Manager::initialise(DisplayMode mode /* = CURRENT_NEXT_TO_HISTORY*/,
-		                 int refresh /* = DEFAULT_REFRESH_RATE*/)
-{
-	displayMode = mode;
-	refreshRate = refresh;
-
-	buildGpus();
-}
-
 //get all available gpus on the system
 void Manager::buildGpus()
 {
@@ -114,6 +104,8 @@ void Manager::refreshGpus()
 //start monitoring the given gpus
 void Manager::startMonitoring(const vector<int> &gpusToMonitor)
 {
+	buildGpus();
+
 	if(noGpusToMonitor())
 	{
 		return;

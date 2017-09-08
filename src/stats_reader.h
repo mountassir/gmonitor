@@ -68,7 +68,7 @@ public:
 
 	void useOptirun(const bool withOptirun);
 
-	StatsReader();
+	StatsReader(bool withOptirun = false) : _optirun(withOptirun) {};
 };
 
 #endif

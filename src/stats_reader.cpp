@@ -21,11 +21,6 @@
 #include <string>
 #include <cstdlib>
 
-StatsReader::StatsReader() :
-	_optirun(false)
-{
-}
-
 //get the current states of a particular gpu
 void StatsReader::getGpuStates(GpuStates *gpuStates,
             		      const string &gpuId)

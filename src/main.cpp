@@ -34,22 +34,22 @@ int main(int argc, char **argv)
 	char *dFlag = NULL; //display mode flag
 	char *gFlag = NULL; //gpus to monitor flag
 	char *rFlag = NULL; //refresh rate flag
+	int oFlag = 0;      //optirun flag
 	int hFlag = 0;      //help flag
 
 	int flag;
 
 	opterr = 0;
 
-	bool optirun = strcmp(argv[0], "optirun");
-
 	//parse arguments
-	while ((flag = getopt(argc, argv, "d:g:r:h")) != -1)
+	while ((flag = getopt(argc, argv, "d:g:r:h:o")) != -1)
 	{
 		switch (flag)
 		{
 			case 'd': { dFlag = optarg; break;}
 			case 'g': { gFlag = optarg; break;}
 			case 'r': { rFlag = optarg; break;}
+			case 'o': { oFlag = 1;      break;}
 			case 'h': { hFlag = 1;      break;}
 			case '?':
 			{
@@ -104,9 +104,15 @@ int main(int argc, char **argv)
 		gpusToMoniterSpecifiedByUser(&gpusToMonitor, string(gFlag));
 	}
 
-	Manager manager(optirun);
+	bool optirun = false;
 
-	manager.initialise(mode, refreshRate);
+	//enable optirun support
+	if(oFlag)
+	{
+		optirun = oFlag;
+	}
+
+	Manager manager(mode, refreshRate, optirun);
 
 	manager.startMonitoring(gpusToMonitor);
 
