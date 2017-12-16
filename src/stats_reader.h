@@ -34,7 +34,7 @@ class StatsReader
 {
 private:
 	//execute a bash command and return the output as double
-	double getDoubleFromSystemCall(const string &command);
+	double getDoubleFromSystemCall(string &command);
 
 	//functions getting the appropriate command and executing it
 	double getGpuUsage(const string &gpuId);
@@ -43,6 +43,7 @@ private:
 	double getGpuTemp(const string &gpuId);
 	double getGpuTotalMemory(const string &gpuId);
 	double getGpuUsedMemory(const string &gpuId);
+	string checkIfSshCommand(string &command);
 
 	//functions returning bash commands to be executed
 	//these commands will call Nvidia drivers with the
@@ -56,6 +57,7 @@ private:
 	void gpuUsedMemoryCommand(const string &gpuId, string *command);
 	void gpuTotalMemoryCommand(const string &gpuId, string *command);
 
+	bool _overSsh;
 	bool _optirun;
 
 public:
@@ -68,7 +70,8 @@ public:
 
 	void useOptirun(const bool withOptirun);
 
-	StatsReader(bool withOptirun = false) : _optirun(withOptirun) {};
+	StatsReader(bool overSsh, bool withOptirun = false) :
+		_overSsh(overSsh), _optirun(withOptirun) {};
 };
 
 #endif

@@ -34,6 +34,9 @@ Monitoring refresh rate (default is 2 seconds). <br />
 -o<br />
 Enable support for Optirun.<br />
 
+-s<br />
+Needed if you are running over ssh.<br />
+
 -h<br />
 Display this menu.<br />
 
