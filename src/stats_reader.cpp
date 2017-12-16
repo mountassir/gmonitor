@@ -97,17 +97,19 @@ double StatsReader::getGpuUsedMemory(const string &gpuId)
 }
 
 //execute a bash command and return the output as double
-double StatsReader::getDoubleFromSystemCall(const string &command)
+double StatsReader::getDoubleFromSystemCall(string &command)
 {
 	FILE *in;
 	char buff[512];
+
+	command = checkIfSshCommand(command);
 
 	if(!(in = popen(command.c_str(), "r")))
 	{
 		return -1;
 	}
 
-	double value;
+	double value = 0;
 
 	while(fgets(buff, sizeof(buff), in) != NULL)
 	{
@@ -130,6 +132,8 @@ bool StatsReader::getGpuList(vector<string> *gpuList)
 
 	//get the bash command
 	gpuListCommand(&command);
+
+	command = checkIfSshCommand(command);
 
 	//execute bash command
 	if(!(in = popen(command.c_str(), "r")))
@@ -259,4 +263,14 @@ void StatsReader::gpuTotalMemoryCommand(const string &gpuId, string *command)
 void StatsReader::useOptirun(const bool withOptirun)
 {
 	_optirun = withOptirun;
+}
+
+string StatsReader::checkIfSshCommand(string &command)
+{
+	if(_overSsh)
+	{
+		return "DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 " + command;
+	}
+
+	return command;
 }

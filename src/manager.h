@@ -66,15 +66,16 @@ private:
 public:
 	Manager(DisplayMode mode,
 			int refresh,
+			bool overSsh,
 			bool optirun = false) :
 				displayMode(mode),
 				refreshRate(refresh),
-				statsReader(optirun) {};
+				statsReader(overSsh, optirun) {};
 
-	Manager(bool optirun = false) :
-				displayMode(CURRENT_NEXT_TO_HISTORY),
-				refreshRate(DEFAULT_REFRESH_RATE),
-				statsReader(optirun) {};
+	Manager() :
+			displayMode(CURRENT_NEXT_TO_HISTORY),
+			refreshRate(DEFAULT_REFRESH_RATE),
+			statsReader(false, false) {};
 
 	//start monitoring the given gpus
 	void startMonitoring(const vector<int> &gpusToMonitor);

@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 	char *gFlag = NULL; //gpus to monitor flag
 	char *rFlag = NULL; //refresh rate flag
 	int oFlag = 0;      //optirun flag
+	int sFlag = 0;      //overSsh flag
 	int hFlag = 0;      //help flag
 
 	int flag;
@@ -42,7 +43,7 @@ int main(int argc, char **argv)
 	opterr = 0;
 
 	//parse arguments
-	while ((flag = getopt(argc, argv, "d:g:r:h:o")) != -1)
+	while ((flag = getopt(argc, argv, "d:g:r:hos")) != -1)
 	{
 		switch (flag)
 		{
@@ -50,6 +51,7 @@ int main(int argc, char **argv)
 			case 'g': { gFlag = optarg; break;}
 			case 'r': { rFlag = optarg; break;}
 			case 'o': { oFlag = 1;      break;}
+			case 's': { sFlag = 1;      break;}
 			case 'h': { hFlag = 1;      break;}
 			case '?':
 			{
@@ -57,8 +59,7 @@ int main(int argc, char **argv)
 				{
 					fprintf (stderr, "Option -%c requires an argument.\n", optopt);
 				}
-				else
-				if (isprint (optopt))
+				else if (isprint (optopt))
 				{
 					fprintf (stderr, "Unknown option `-%c'.\n", optopt);
 				}
@@ -112,7 +113,15 @@ int main(int argc, char **argv)
 		optirun = oFlag;
 	}
 
-	Manager manager(mode, refreshRate, optirun);
+	bool overSsh = false;
+
+	//enable overSsh command
+	if(sFlag)
+	{
+		overSsh = sFlag;
+	}
+
+	Manager manager(mode, refreshRate, overSsh, optirun);
 
 	manager.startMonitoring(gpusToMonitor);
 
