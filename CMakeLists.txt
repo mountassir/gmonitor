@@ -13,3 +13,5 @@ ADD_EXECUTABLE ( gmonitor
   src/manager.cpp
   src/stats_reader.cpp
   )
+
+INSTALL (TARGETS gmonitor DESTINATION /usr/local/bin)
