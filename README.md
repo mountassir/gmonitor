@@ -16,9 +16,9 @@ This program probes the NVIDIA drivers for statistics through nvidia-settings, m
 ###### CUDA install:
 Follow [Nvidia CUDA install guide](http://docs.nvidia.com/cuda/index.html) to install CUDA on your machine, If you face issues with the nouveau driver, try this [Nouveau workaround](http://askubuntu.com/questions/451221/ubuntu-14-04-install-nvidia-driver).
 
-# Building from Source
+# Building from Source:
 ### Configuring with CMake
-Install gmonitor in /usr/local/bin
+Compile and install gmonitor in /usr/local/bin
 ``` bash
 $ cd gmonitor
 $ mkdir build
