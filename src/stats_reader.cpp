@@ -23,14 +23,25 @@
 
 //get the current states of a particular gpu
 void StatsReader::getGpuStates(GpuStates *gpuStates,
-            		      const string &gpuId)
+            		           const string &gpuId)
 {
-	gpuStates->gpuUsage        = getGpuUsage(gpuId);
-	gpuStates->memoryBandwidth = getGpuMemoryBandwidth(gpuId);
-	gpuStates->pciBandwidth    = getGpuPciBandwidth(gpuId);
-	gpuStates->totalMemory     = getGpuTotalMemory(gpuId);
-	gpuStates->usedMemory      = getGpuUsedMemory(gpuId);
-	gpuStates->coreTemp        = getGpuTemp(gpuId);
+	string command;
+
+	getAllGpuStatesCommand(gpuId, &command);
+
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || (values.size() != NUMBER_OF_SUPPORTED_STATES))
+	{
+		return;
+	}
+
+	gpuStates->gpuUsage        = values[GRAPHICS_USAGE_INDEX];
+	gpuStates->memoryBandwidth = values[VRAM_BANDWIDTH_INDEX];
+	gpuStates->pciBandwidth    = values[PCIE_BADWIDTH_INDEX];
+	gpuStates->totalMemory     = values[TOTAL_VRAM_INDEX];
+	gpuStates->usedMemory      = values[USED_VRAM_INDEX];
+	gpuStates->coreTemp        = values[CORE_TEMP_INDEX];
 
 	//calculate memory usage percentage
 	gpuStates->memoryUsage     = (gpuStates->usedMemory / gpuStates->totalMemory) * 100;
@@ -43,7 +54,14 @@ double StatsReader::getGpuUsage(const string &gpuId)
 
 	gpuCoreUsageCommand(gpuId, &command);
 
-	return getDoubleFromSystemCall(command);
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || values.empty())
+	{
+		return -1;
+	}
+
+	return values[0];
 }
 
 //probe Nvidia drivers for memory bus usage
@@ -53,7 +71,14 @@ double StatsReader::getGpuMemoryBandwidth(const string &gpuId)
 
 	gpuMemoryBandwidthCommand(gpuId, &command);
 
-	return getDoubleFromSystemCall(command);
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || values.empty())
+	{
+		return -1;
+	}
+
+	return values[0];
 }
 
 //probe Nvidia drivers for pci-e usage
@@ -63,7 +88,14 @@ double StatsReader::getGpuPciBandwidth(const string &gpuId)
 
 	gpuPciBandwidthCommand(gpuId, &command);
 
-	return getDoubleFromSystemCall(command);
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || values.empty())
+	{
+		return -1;
+	}
+
+	return values[0];
 }
 
 //probe Nvidia drivers for gpu temperature
@@ -73,7 +105,14 @@ double StatsReader::getGpuTemp(const string &gpuId)
 
 	gpuTempCommand(gpuId, &command);
 
-	return getDoubleFromSystemCall(command);
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || values.empty())
+	{
+		return -1;
+	}
+
+	return values[0];
 }
 
 //probe Nvidia drivers for total available memory
@@ -83,7 +122,14 @@ double StatsReader::getGpuTotalMemory(const string &gpuId)
 
 	gpuTotalMemoryCommand(gpuId, &command);
 
-	return getDoubleFromSystemCall(command);
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || values.empty())
+	{
+		return -1;
+	}
+
+	return values[0];
 }
 
 //probe Nvidia drivers for currently used memory
@@ -93,11 +139,18 @@ double StatsReader::getGpuUsedMemory(const string &gpuId)
 
 	gpuUsedMemoryCommand(gpuId, &command);
 
-	return getDoubleFromSystemCall(command);
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || values.empty())
+	{
+		return -1;
+	}
+
+	return values[0];
 }
 
 //execute a bash command and return the output as double
-double StatsReader::getDoubleFromSystemCall(string &command)
+bool StatsReader::getDoubleFromSystemCall(string &command, std::vector<double> *values)
 {
 	FILE *in;
 	char buff[512];
@@ -106,20 +159,18 @@ double StatsReader::getDoubleFromSystemCall(string &command)
 
 	if(!(in = popen(command.c_str(), "r")))
 	{
-		return -1;
+		return false;
 	}
-
-	double value = 0;
 
 	while(fgets(buff, sizeof(buff), in) != NULL)
 	{
-		value = atoi(string(buff).c_str());
+		values->push_back(atoi(string(buff).c_str()));
 
 	}
 
 	pclose(in);
 
-	return value;
+	return true;
 }
 
 //get the list of available gpus on this machine
@@ -155,7 +206,7 @@ bool StatsReader::getGpuList(vector<string> *gpuList)
 
 	return true;
 }
-nvidia-settings -t -q [gpu:0]/GPUUtilization -q [gpu:0]/GPUCoreTemp -q [gpu:0]/UsedDedicatedGPUMemory | tr ',' '\n' | sed 's/[^0-9]//g'
+
 //=======================================================================
 //         functions returning the appropriate bash commands
 //=======================================================================

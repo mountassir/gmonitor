@@ -26,6 +26,22 @@
 
 using namespace std;
 
+namespace 
+{
+	const int NUMBER_OF_SUPPORTED_STATES = 7;
+
+	enum StateIndex
+	{
+		GRAPHICS_USAGE_INDEX = 0,
+		VRAM_BANDWIDTH_INDEX = 1,
+		VIDEO_USAGE_INDEX    = 2,
+		PCIE_BADWIDTH_INDEX  = 3,
+		CORE_TEMP_INDEX      = 4,
+		TOTAL_VRAM_INDEX     = 5,
+		USED_VRAM_INDEX      = 6,
+	};
+}
+
 /*
  * StatsReader class: probes Nvidia drivers and get the appropriate
  * gpu states; gpu usage, memory usage ...
@@ -34,7 +50,7 @@ class StatsReader
 {
 private:
 	//execute a bash command and return the output as double
-	double getDoubleFromSystemCall(string &command);
+	bool getDoubleFromSystemCall(string &command, std::vector<double> *values);
 
 	//functions getting the appropriate command and executing it
 	double getGpuUsage(const string &gpuId);
