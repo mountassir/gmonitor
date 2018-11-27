@@ -155,7 +155,7 @@ bool StatsReader::getGpuList(vector<string> *gpuList)
 
 	return true;
 }
-
+nvidia-settings -t -q [gpu:0]/GPUUtilization -q [gpu:0]/GPUCoreTemp -q [gpu:0]/UsedDedicatedGPUMemory | tr ',' '\n' | sed 's/[^0-9]//g'
 //=======================================================================
 //         functions returning the appropriate bash commands
 //=======================================================================
@@ -171,6 +171,25 @@ void StatsReader::gpuListCommand(string *gpuList)
 	oss << "-t -q gpus | sed -e 's/^ *//'";
 
 	*gpuList = oss.str();
+}
+
+//get current gpu states, gpuId = [gpu:0], [gpu:1]...
+//split results by ',' (tr ',' '\n')
+//grep only numbers in the line (sed 's/[^0-9]//g')
+void StatsReader::getAllGpuStatesCommand(const string &gpuId, string *command)
+{
+	stringstream oss;
+
+	oss << "nvidia-settings ";
+	if(_optirun)
+		oss << "-c :8 ";
+	oss << "-t -q " << gpuId << "/GPUUtilization -q "
+	    << gpuId << "/GPUCoreTemp -q " 
+	    << gpuId << "/TotalDedicatedGPUMemory -q "
+	    << gpuId << "/UsedDedicatedGPUMemory "
+	    << " | tr ',' '\n' | sed 's/[^0-9]//g'";
+
+	*command = oss.str();
 }
 
 //get current gpu states, gpuId = [gpu:0], [gpu:1]...

@@ -50,6 +50,7 @@ private:
 	//corresponding arguments, these commands may even
 	//perform some sort of stream processing (grep, sed...)
 	void gpuListCommand(string *gpuList);
+	void getAllGpuStatesCommand(const string &gpuId, string *command);
 	void gpuCoreUsageCommand(const string &gpuId, string *command);
 	void gpuMemoryBandwidthCommand(const string &gpuId, string *command);
 	void gpuPciBandwidthCommand(const string &gpuId, string *command);
