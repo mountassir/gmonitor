@@ -26,6 +26,22 @@
 
 using namespace std;
 
+namespace 
+{
+	const int NUMBER_OF_SUPPORTED_STATES = 7;
+
+	enum StateIndex
+	{
+		GRAPHICS_USAGE_INDEX = 0,
+		VRAM_BANDWIDTH_INDEX = 1,
+		VIDEO_USAGE_INDEX    = 2,
+		PCIE_BADWIDTH_INDEX  = 3,
+		CORE_TEMP_INDEX      = 4,
+		TOTAL_VRAM_INDEX     = 5,
+		USED_VRAM_INDEX      = 6,
+	};
+}
+
 /*
  * StatsReader class: probes Nvidia drivers and get the appropriate
  * gpu states; gpu usage, memory usage ...
@@ -33,29 +49,17 @@ using namespace std;
 class StatsReader
 {
 private:
-	//execute a bash command and return the output as double
-	double getDoubleFromSystemCall(string &command);
-
-	//functions getting the appropriate command and executing it
-	double getGpuUsage(const string &gpuId);
-	double getGpuMemoryBandwidth(const string &gpuId);
-	double getGpuPciBandwidth(const string &gpuId);
-	double getGpuTemp(const string &gpuId);
-	double getGpuTotalMemory(const string &gpuId);
-	double getGpuUsedMemory(const string &gpuId);
-	string checkIfSshCommand(string &command);
+	//execute a bash command and return the output as an array doubles
+	bool getDoubleFromSystemCall(string &command, std::vector<double> *values);
 
 	//functions returning bash commands to be executed
 	//these commands will call Nvidia drivers with the
 	//corresponding arguments, these commands may even
 	//perform some sort of stream processing (grep, sed...)
 	void gpuListCommand(string *gpuList);
-	void gpuCoreUsageCommand(const string &gpuId, string *command);
-	void gpuMemoryBandwidthCommand(const string &gpuId, string *command);
-	void gpuPciBandwidthCommand(const string &gpuId, string *command);
-	void gpuTempCommand(const string &gpuId, string *command);
-	void gpuUsedMemoryCommand(const string &gpuId, string *command);
-	void gpuTotalMemoryCommand(const string &gpuId, string *command);
+	void getAllGpuStatesCommand(const string &gpuId, string *command);
+
+	string checkIfSshCommand(string &command);
 
 	bool _overSsh;
 	bool _optirun;

@@ -23,81 +23,32 @@
 
 //get the current states of a particular gpu
 void StatsReader::getGpuStates(GpuStates *gpuStates,
-            		      const string &gpuId)
+            		           const string &gpuId)
 {
-	gpuStates->gpuUsage        = getGpuUsage(gpuId);
-	gpuStates->memoryBandwidth = getGpuMemoryBandwidth(gpuId);
-	gpuStates->pciBandwidth    = getGpuPciBandwidth(gpuId);
-	gpuStates->totalMemory     = getGpuTotalMemory(gpuId);
-	gpuStates->usedMemory      = getGpuUsedMemory(gpuId);
-	gpuStates->coreTemp        = getGpuTemp(gpuId);
+	string command;
+
+	getAllGpuStatesCommand(gpuId, &command);
+
+	std::vector<double> values;
+
+	if(!getDoubleFromSystemCall(command, &values) || (values.size() != NUMBER_OF_SUPPORTED_STATES))
+	{
+		return;
+	}
+
+	gpuStates->gpuUsage        = values[GRAPHICS_USAGE_INDEX];
+	gpuStates->memoryBandwidth = values[VRAM_BANDWIDTH_INDEX];
+	gpuStates->pciBandwidth    = values[PCIE_BADWIDTH_INDEX];
+	gpuStates->totalMemory     = values[TOTAL_VRAM_INDEX];
+	gpuStates->usedMemory      = values[USED_VRAM_INDEX];
+	gpuStates->coreTemp        = values[CORE_TEMP_INDEX];
 
 	//calculate memory usage percentage
 	gpuStates->memoryUsage     = (gpuStates->usedMemory / gpuStates->totalMemory) * 100;
 }
 
-//probe Nvidia drivers for gpu usage
-double StatsReader::getGpuUsage(const string &gpuId)
-{
-	string command;
-
-	gpuCoreUsageCommand(gpuId, &command);
-
-	return getDoubleFromSystemCall(command);
-}
-
-//probe Nvidia drivers for memory bus usage
-double StatsReader::getGpuMemoryBandwidth(const string &gpuId)
-{
-	string command;
-
-	gpuMemoryBandwidthCommand(gpuId, &command);
-
-	return getDoubleFromSystemCall(command);
-}
-
-//probe Nvidia drivers for pci-e usage
-double StatsReader::getGpuPciBandwidth(const string &gpuId)
-{
-	string command;
-
-	gpuPciBandwidthCommand(gpuId, &command);
-
-	return getDoubleFromSystemCall(command);
-}
-
-//probe Nvidia drivers for gpu temperature
-double StatsReader::getGpuTemp(const string &gpuId)
-{
-	string command;
-
-	gpuTempCommand(gpuId, &command);
-
-	return getDoubleFromSystemCall(command);
-}
-
-//probe Nvidia drivers for total available memory
-double StatsReader::getGpuTotalMemory(const string &gpuId)
-{
-	string command;
-
-	gpuTotalMemoryCommand(gpuId, &command);
-
-	return getDoubleFromSystemCall(command);
-}
-
-//probe Nvidia drivers for currently used memory
-double StatsReader::getGpuUsedMemory(const string &gpuId)
-{
-	string command;
-
-	gpuUsedMemoryCommand(gpuId, &command);
-
-	return getDoubleFromSystemCall(command);
-}
-
 //execute a bash command and return the output as double
-double StatsReader::getDoubleFromSystemCall(string &command)
+bool StatsReader::getDoubleFromSystemCall(string &command, std::vector<double> *values)
 {
 	FILE *in;
 	char buff[512];
@@ -106,20 +57,18 @@ double StatsReader::getDoubleFromSystemCall(string &command)
 
 	if(!(in = popen(command.c_str(), "r")))
 	{
-		return -1;
+		return false;
 	}
-
-	double value = 0;
 
 	while(fgets(buff, sizeof(buff), in) != NULL)
 	{
-		value = atoi(string(buff).c_str());
+		values->push_back(atoi(string(buff).c_str()));
 
 	}
 
 	pclose(in);
 
-	return value;
+	return true;
 }
 
 //get the list of available gpus on this machine
@@ -175,87 +124,19 @@ void StatsReader::gpuListCommand(string *gpuList)
 
 //get current gpu states, gpuId = [gpu:0], [gpu:1]...
 //split results by ',' (tr ',' '\n')
-//grep gpu usage 'graphics' (grep graphics)
 //grep only numbers in the line (sed 's/[^0-9]//g')
-void StatsReader::gpuCoreUsageCommand(const string &gpuId, string *command)
+void StatsReader::getAllGpuStatesCommand(const string &gpuId, string *command)
 {
 	stringstream oss;
 
 	oss << "nvidia-settings ";
 	if(_optirun)
 		oss << "-c :8 ";
-	oss << "-t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep graphics|sed 's/[^0-9]//g'";
-
-	*command = oss.str();
-}
-
-//get current gpu states, gpuId = [gpu:0], [gpu:1]...
-//split results by ',' (tr ',' '\n')
-//grep memory usage 'memory' (grep memory)
-//grep only numbers in the line (sed 's/[^0-9]//g')
-void StatsReader::gpuMemoryBandwidthCommand(const string &gpuId, string *command)
-{
-	stringstream oss;
-
-	oss << "nvidia-settings ";
-	if(_optirun)
-		oss << "-c :8 ";
-	oss << "-t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep memory|sed 's/[^0-9]//g'";
-
-	*command = oss.str();
-}
-
-//get current gpu states, gpuId = [gpu:0], [gpu:1]...
-//split results by ',' (tr ',' '\n')
-//grep pci-e usage 'PCIe' (grep PCIe)
-//grep only numbers in the line (sed 's/[^0-9]//g')
-void StatsReader::gpuPciBandwidthCommand(const string &gpuId, string *command)
-{
-	stringstream oss;
-
-	oss << "nvidia-settings ";
-	if(_optirun)
-		oss << "-c :8 ";
-	oss << "-t -q " << gpuId << "/GPUUtilization | tr ',' '\n' |grep PCIe|sed 's/[^0-9]//g'";
-
-	*command = oss.str();
-}
-
-//get current gpu temperature, gpuId = [gpu:0], [gpu:1]...
-void StatsReader::gpuTempCommand(const string &gpuId, string *command)
-{
-	stringstream oss;
-
-	oss << "nvidia-settings ";
-	if(_optirun)
-		oss << "-c :8 ";
-	oss << "-t -q " << gpuId << "/GPUCoreTemp";
-
-	*command = oss.str();
-}
-
-//get the current used memory, gpuId = [gpu:0], [gpu:1]...
-void StatsReader::gpuUsedMemoryCommand(const string &gpuId, string *command)
-{
-	stringstream oss;
-
-	oss << "nvidia-settings ";
-	if(_optirun)
-		oss << "-c :8 ";
-	oss << "-t -q " << gpuId << "/UsedDedicatedGPUMemory";
-
-	*command = oss.str();
-}
-
-//get the total dedicated memory on the card, gpuId = [gpu:0], [gpu:1]...
-void StatsReader::gpuTotalMemoryCommand(const string &gpuId, string *command)
-{
-	stringstream oss;
-
-	oss << "nvidia-settings ";
-	if(_optirun)
-		oss << "-c :8 ";
-	oss << "-t -q " << gpuId << "/TotalDedicatedGPUMemory";
+	oss << "-t -q " << gpuId << "/GPUUtilization -q "
+	    << gpuId << "/GPUCoreTemp -q " 
+	    << gpuId << "/TotalDedicatedGPUMemory -q "
+	    << gpuId << "/UsedDedicatedGPUMemory "
+	    << " | tr ',' '\n' | sed 's/[^0-9]//g'";
 
 	*command = oss.str();
 }
