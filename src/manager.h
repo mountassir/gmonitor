@@ -68,14 +68,14 @@ public:
 			int refresh,
 			bool overSsh,
 			bool optirun = false) :
+				statsReader(overSsh, optirun),
 				displayMode(mode),
-				refreshRate(refresh),
-				statsReader(overSsh, optirun) {};
+				refreshRate(refresh) {};
 
 	Manager() :
+			statsReader(false, false),
 			displayMode(CURRENT_NEXT_TO_HISTORY),
-			refreshRate(DEFAULT_REFRESH_RATE),
-			statsReader(false, false) {};
+			refreshRate(DEFAULT_REFRESH_RATE) {};
 
 	//start monitoring the given gpus
 	void startMonitoring(const vector<int> &gpusToMonitor);
