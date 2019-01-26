@@ -16,10 +16,13 @@
  * along with gmonitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <iostream>
 #include <sstream>
 #include <sys/ioctl.h>
 #include "console_writer.h"
+#include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -88,7 +91,7 @@ string ConsoleWriter::inBlue(const string &text)
 }
 
 //return the correct colour for a value (0 - 100)
-Color ConsoleWriter::getColorByValue(int value)
+Color ConsoleWriter::getColorByValue(unsigned int value)
 {
 	if(value < 25 - resolution){ return BLUE;}
 	else
@@ -183,6 +186,8 @@ void ConsoleWriter::updateTerminalDimensions(int colms, int rows)
 void ConsoleWriter::clearConsole()
 {
 	cout << "\x1B[2J\x1B[H";
+        // On the first run, the dimensions are wrong, so let's check them
+        refreshTerminalDimensions();
 }
 
 //print gpu identifiers
@@ -190,9 +195,27 @@ void ConsoleWriter::printGpuIdentifier(const string &gpuId,
 				                const string &gpuName,
 				                int totalAvailableMemory)
 {
-	cout << "\nID: " << gpuId
-		 << ", Name: " << gpuName
-		 << " ("<< totalAvailableMemory << " MB)";
+        char outline[BUFFER_LENGTH + 1];
+        size_t len;
+        chrono::system_clock::time_point today = chrono::system_clock::now();
+        time_t tt = chrono::system_clock::to_time_t(today);
+
+        cout << endl;
+        len = snprintf(outline, BUFFER_LENGTH, "ID: %s", gpuId.c_str());
+        if ((len < terminalColms) && (len < BUFFER_LENGTH)) {
+            len += snprintf(&outline[len], BUFFER_LENGTH - len, ", Name: %s",
+                gpuName.c_str());
+            if ((len < terminalColms) && (len < BUFFER_LENGTH)) {
+                len += snprintf(&outline[len], BUFFER_LENGTH - len, " (%d MB)",
+                    totalAvailableMemory);
+                if ((len < terminalColms) && (len < BUFFER_LENGTH)) {
+                    len += snprintf(&outline[len], BUFFER_LENGTH - len, "%*s",
+                        terminalColms - len, ctime(&tt));
+                }
+            }
+        }
+        outline[len] = 0; // make sure it's terminated
+        cout << outline;
 }
 
 //print the current state of the gpu
@@ -229,7 +252,7 @@ void ConsoleWriter::printCurrentGpuState(const GpuStates &state)
 
 //print one state, value is represented by a list
 //of '|', 10 -> |||||||||| (for resolution = 1)
-string ConsoleWriter::printOneStateInOneLine(States state, int value)
+string ConsoleWriter::printOneStateInOneLine(States state, unsigned int value)
 {
 	string preLabel, postLabel;
 
@@ -237,7 +260,7 @@ string ConsoleWriter::printOneStateInOneLine(States state, int value)
 
 	ostringstream oss;
 
-	int character = 0;
+	unsigned int character = 0;
 
 	while(character <= (terminalColms ) * resolution)
 	{

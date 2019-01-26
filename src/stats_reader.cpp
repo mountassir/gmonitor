@@ -51,7 +51,7 @@ void StatsReader::getGpuStates(GpuStates *gpuStates,
 bool StatsReader::getDoubleFromSystemCall(string &command, std::vector<double> *values)
 {
 	FILE *in;
-	char buff[512];
+	char buff[BUFFER_LENGTH];
 
 	command = checkIfSshCommand(command);
 
@@ -75,7 +75,7 @@ bool StatsReader::getDoubleFromSystemCall(string &command, std::vector<double> *
 bool StatsReader::getGpuList(vector<string> *gpuList)
 {
 	FILE *in;
-	char buff[512];
+	char buff[BUFFER_LENGTH];
 
 	string command;
 
