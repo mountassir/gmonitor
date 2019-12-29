@@ -69,7 +69,8 @@ enum DisplayMode
 // for each gpu)
 const DisplayMode DEFAULT_DISPLAY_MODE = CURRENT_NEXT_TO_HISTORY;
 
-
 const int DEFAULT_REFRESH_RATE = 2; //default refresh rate, 2 seconds
+
+const int BUFFER_LENGTH = 512;
 
 #endif

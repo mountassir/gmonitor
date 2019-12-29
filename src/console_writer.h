@@ -25,7 +25,7 @@
 using namespace std;
 
 const int DEFAULT_ROW_N = 100;  //default terminal window vertical size
-const int DEFAULT_COL_N = 100;  //default terminal window hotizontal size
+const int DEFAULT_COL_N = 100;  //default terminal window horizontal size
 const int DEFAULT_RES   = 1;    //default resolution, '|' represents one % / c
 
 /*
@@ -34,10 +34,10 @@ const int DEFAULT_RES   = 1;    //default resolution, '|' represents one % / c
 class ConsoleWriter
 {
 private:
-	int    terminalRows;     //total rows of the terminal
-	int    terminalColms;    //total columns of the terminal
-	int    resolution;       //how many unites a column represents
-	int    combinedBarSize;
+	unsigned int    terminalRows;     //total rows of the terminal
+	unsigned int    terminalColms;    //total columns of the terminal
+	unsigned int    resolution;       //how many units a column represents
+	unsigned int    combinedBarSize;
 
 	//return a coloured text
 	string colourText(Color color, const string &text);
@@ -48,7 +48,7 @@ private:
 	string inLightBlue(const string &text);
 
 	//return the correct color for a value (0 - 100)
-	Color getColorByValue(int value);
+	Color getColorByValue(unsigned int value);
 
 	//return the correct color for a state
 	Color getColorByState(States toPrint);
@@ -75,7 +75,7 @@ private:
 	//print one state, value is represented by a list
 	//of '|', 10 -> |||||||||| (for resolution = 1)
 	string printOneStateInOneLine(States state,
-								  int value);
+                                                    unsigned int value);
 
 	//print one state, value is represented by a list
 	//of '|', resolution depends on the line size
@@ -98,7 +98,7 @@ public:
 		: terminalRows(DEFAULT_ROW_N),
 		  terminalColms(DEFAULT_COL_N),
 		  resolution(DEFAULT_RES),
-		  combinedBarSize(0) {};
+		  combinedBarSize(0) { };
 
 	//clear the terminal
 	void clearConsole();
